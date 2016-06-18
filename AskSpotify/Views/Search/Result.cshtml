@@ -28,7 +28,7 @@
         @if (Model?.Tracks?.Items != null)
         {
             <div class="col-md-10">
-                <h3>@Model.Tracks.limit results (@Model.Tracks.total total)</h3>
+                <h3>@Model.Tracks.Items.Count() results (@Model.Tracks.total total)</h3>
                 <div class="col-md-12">
                     Spotify url: @Model.Tracks.href
                 </div>
