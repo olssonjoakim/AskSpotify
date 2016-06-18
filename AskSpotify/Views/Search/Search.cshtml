@@ -1,0 +1,28 @@
+﻿@model AskSpotify.Models.SearchViewModel
+
+@{
+    ViewBag.Title = "AskSpotify";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Search", "Search", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <div class="col-md-12">
+        <h3 class="h-center">Ask spotify for recommendations</h3>
+        <h5 class="h-center">
+            You can search for artist, year, track name, album name etc.
+            <br />
+            Example: Sting Boots
+        </h5>
+        <div class="form-group h-center col-md-12">
+            <div>
+                @Html.LabelFor(m => m.SearchString, new { @class = "col-md-4 control-label" })
+                @Html.TextBoxFor(m => m.SearchString, new { @class = "col-offset-2 col-md-6 form-control" })
+                @Html.ValidationMessageFor(m => m.SearchString, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                <input type="submit" value="Search" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}

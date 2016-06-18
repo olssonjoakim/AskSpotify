@@ -1,101 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using AskSpotify.BusinessLayer.Extensions;
+using AskSpotify.Models;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace AskSpotify.Controllers
 {
     public class SearchController : Controller
     {
-        
-
-
-
-
-
-        #region Default
-
-        // GET: Search
         public ActionResult Index()
         {
-            return View();
+            return View("Search");
         }
-
-        // GET: Search/Details/5
-        public ActionResult Details(int id)
+        
+        /// <summary>
+        /// Searches Spotify for the top 50 tracks
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<ActionResult> Search(SearchViewModel model)
         {
-            return View();
-        }
-
-        // GET: Search/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Search/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
+            if (model == null || model.SearchString.IsNullOrEmpty())
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
+                ViewBag.Message = "Text to search for cannot be null or empty.";
                 return View();
             }
+
+            // create request to send to Spotify
+            var request = new BusinessLayer.Request.SpotifyRequest();
+            request.Query = model.SearchString;
+            request.ItemType = BusinessLayer.Models.ItemType.Track;
+            request.Limit = 50;
+
+            // retrive the response from Spotify
+            var response = await BusinessLayer.Spotify.SearchAsync(request);
+
+            // create a resultsviewmodel that will display the results in the view
+            var resultsViewModel = new ResultsViewModel();
+
+            resultsViewModel.SearchString = model.SearchString;
+            resultsViewModel.Tracks = response.Tracks; // Set to Tracks, as it's the only thing we search for right now.
+
+            return View("Result", resultsViewModel );
         }
 
-        // GET: Search/Edit/5
-        public ActionResult Edit(int id)
+
+        public ActionResult Result(ResultsViewModel viewModel)
         {
-            return View();
+            return View("Result", viewModel);
         }
 
-        // POST: Search/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Search/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Search/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-
-
-        #endregion
     }
 }
